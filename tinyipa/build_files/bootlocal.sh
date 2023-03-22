@@ -72,6 +72,14 @@ if [ -d /sys/firmware/efi ] ; then
     mount -t efivarfs efivarfs /sys/firmware/efi/efivars
 fi
 
+CONFFILE=/etc/ironic-python-agent.d/99-configure-clock-skew.conf
+
+cat <<EOF | tee $CONFFILE
+[DEFAULT]
+auto_tls_allowed_clock_skew = 86400
+
+EOF
+
 # Run IPA
 echo "Starting Ironic Python Agent:"
 date
