@@ -72,6 +72,8 @@ if [ -d /sys/firmware/efi ] ; then
     mount -t efivarfs efivarfs /sys/firmware/efi/efivars
 fi
 
+# allow a massive clock skew because of bios clock setting differences
+# https://docs.openstack.org/ironic-python-agent/victoria/_modules/ironic_python_agent/config.html
 CONFFILE=/etc/ironic-python-agent.d/99-configure-clock-skew.conf
 
 cat <<EOF | tee $CONFFILE
@@ -83,7 +85,7 @@ EOF
 # Run IPA
 echo "Starting Ironic Python Agent:"
 date
-ironic-python-agent --config-dir /etc/ironic-python-agent.d/ 2>&1 | tee /var/log/ironic-python-agent.log
+ironic-python-agent --auto_tls_allowed_clock_skew 86400  --config-dir /etc/ironic-python-agent.d/ 2>&1 | tee /var/log/ironic-python-agent.log
 
 
 create_rescue_user() {

@@ -1,0 +1,19 @@
+#!/bin/bash
+
+# This is the path inside the ramdisk, referenced in config files
+INSIDEDIR=/etc/ironic-python-agent.d/
+
+# but when copying files from outside the ramdisk, we have to use the mounted
+# DIB filesystems
+KEYDIR=$TMP_BUILD_DIR/mnt/$INSIDEDIR
+
+CONFFILE=$KEYDIR/20-configure-clock-skew.conf
+
+# set clock skew
+# https://docs.openstack.org/ironic-python-agent/victoria/_modules/ironic_python_agent/config.html
+cat <<EOF | sudo tee $CONFFILE
+[DEFAULT]
+auto_tls_allowed_clock_skew = 86400
+
+EOF
+
